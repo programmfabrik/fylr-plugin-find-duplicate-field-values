@@ -1,0 +1,18 @@
+/* the table, in which the found dublicate-values are displayed */
+.dublicate-info-standard-display {
+  margin-right: 30px;
+  margin-left: 30px;
+}
+
+.dublicate-info-standard-display table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.dublicate-info-standard-display table tr:nth-child(even) {
+  background-color: #E2E2E2;
+}
+
+.dublicate-info-standard-display table th, td {
+  padding: 10px 30px;
+}

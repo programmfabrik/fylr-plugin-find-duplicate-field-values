@@ -1,0 +1,30 @@
+plugin:
+  name: find-duplicate-field-values
+  version: 1.0
+  url: https://github.com/programmfabrik/fylr-plugin-find-duplicate-field-values
+  displayname:
+    de-DE: Finde doppelte Feldwerte
+    en-US: Find dublicate field values
+  info:
+    de-DE: "Masksplitter, der für ein Textfeld konfiguriert wird und im Editor anzeigt, ob das Feld im Sichtbarkeitsbereich des Nutzers schon einmal den gleichen Wert hat."
+    en-US: "Masksplitter that is configured for a text field and shows in the editor whether the field has the same value in the user's visibility range before."
+  webfrontend:
+    url: find-duplicate-field-values.js
+    css: find-duplicate-field-values.css
+  l10n: l10n/find-duplicate-field-values.csv
+
+base_url_prefix: "webfrontend"
+
+base_config:
+  - name: FindDuplicateFieldvalues
+    group: findduplicatefieldvalues
+    parameters:
+      find_duplicate_field_values:
+        position: 0
+        type: table
+        label: groups
+        fields:
+          - name: group_id
+            position: 0
+            type: int
+            plugin_type: group_easydb_select

@@ -1,0 +1,10 @@
+key,de-DE,en-US
+find.dublicate.field.values.name,Finde doppelte Feldwerte,Find duplicate field values
+find.dublicate.field.values.title,Finde doppelte Feldwerte,Find duplicate field values
+mask.splitter.panel.spliter_name.find-dublicate-field-values-end|text,Finde doppelte Feldwerte (Ende des Splitters),Find duplicate field values (end of splitter)
+server.config.name.system.FindDuplicateFieldvalues,Konfiguration,Configuration
+server.config.parameter.system.FindDuplicateFieldvalues.find_duplicate_field_values.label,Gruppen wählen,Select groups
+server.config.parameter.system.FindDuplicateFieldvalues.find_duplicate_field_values.group_id.label,Gruppe,Group
+find.duplicate.field.values.fieldtotestforduplicates,Feld auswählen,Choose field
+fylr-plugin-find-duplicate-field-values.info.link,Dubletten gefunden. Mehr Info hier,Duplicates found. More information
+fylr-plugin-find-duplicate-field-values.modal.open.link,Öffnen,Öffnen
