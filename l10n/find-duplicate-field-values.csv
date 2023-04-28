@@ -8,3 +8,5 @@ server.config.parameter.system.FindDuplicateFieldvalues.find_duplicate_field_val
 find.duplicate.field.values.fieldtotestforduplicates,Feld auswählen,Choose field
 fylr-plugin-find-duplicate-field-values.info.link,Dubletten gefunden. Mehr Info hier,Duplicates found. More information
 fylr-plugin-find-duplicate-field-values.modal.open.link,Öffnen,Öffnen
+fylr-plugin-find-duplicate-field-values.options.empty,Ohne,Without
+fylr-plugin-find-duplicate-field-values.options.empty_save,Die Optionen werden erst nach dem Speichern sichtbar,The options only become visible after saving

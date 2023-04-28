@@ -53,20 +53,20 @@ class FindDublicateFieldValues extends CustomMaskSplitter
 
      modal.autoSize()
 
-  _performSearchAndAdjustButton: (value, objecttype, fieldnameForSearch, infoButton) ->
+  _performSearchAndAdjustButton: (value, objecttype, full_name, infoButton) ->
     url = window.easydb_server_url + '/api/v1/search'
     ez5.api.search
       type: "POST"
       json_data:
         limit: 100
-        format: 'long'
+        format: 'standard'
         generate_rights: false
         objecttypes: [objecttype]
         search: [
            type: 'match',
            mode: 'fulltext',
            fields: [
-              objecttype + '.' + fieldnameForSearch
+              full_name
            ],
            string: value,
            phrase: false,
@@ -103,6 +103,10 @@ class FindDublicateFieldValues extends CustomMaskSplitter
       if allowedGroups.includes group.id
         isAllowedUse = true
 
+    # or if root-user
+    if ez5.session.user.id == 1
+      isAllowedUse = true
+
     # if use not allowed
     if ! isAllowedUse
       return CUI.dom.append(@renderInnerFields(opts))
@@ -115,7 +119,12 @@ class FindDublicateFieldValues extends CustomMaskSplitter
     innerFields = @renderInnerFields(opts)
 
     # no action in detail-mode
-    if opts.mode == "detail"
+    if opts.mode == 'detail' || opts.mode == 'expert'
+      return innerFields
+
+    configuredField = @getDataOptions()?.fieldtotestforduplicates
+
+    if configuredField == null
       return innerFields
 
     fieldsRendererPlain = @__customFieldsRenderer.fields[0]
@@ -124,7 +133,6 @@ class FindDublicateFieldValues extends CustomMaskSplitter
     #####################################################################################
     # EDITOR-Mode
     #####################################################################################
-
     if opts.mode == "editor" || opts.mode == "editor-bulk"
       if fields
         field = fields[0]
@@ -173,7 +181,7 @@ class FindDublicateFieldValues extends CustomMaskSplitter
         if opts.data[field.ColumnSchema.name]
           # do search
           fieldValue = opts.data[field.ColumnSchema.name]
-          @._performSearchAndAdjustButton(fieldValue, objecttype, field.ColumnSchema.name, infoButton)
+          @._performSearchAndAdjustButton(fieldValue, objecttype, field.__dbg_full_name, infoButton)
 
         # listen for changes in field
         CUI.Events.listen
@@ -184,7 +192,7 @@ class FindDublicateFieldValues extends CustomMaskSplitter
             hasValue = false
             if opts.data[field.ColumnSchema.name]
               fieldValue = opts.data[field.ColumnSchema.name]
-              @._performSearchAndAdjustButton(fieldValue, objecttype, field.ColumnSchema.name, infoButton)
+              @._performSearchAndAdjustButton(fieldValue, objecttype, field.__dbg_full_name, infoButton)
 
         return CUI.dom.append(verticalLayout)
     return
@@ -201,19 +209,68 @@ class FindDublicateFieldValues extends CustomMaskSplitter
     return allowedGroups
 
 
+  ##########################################################################################
+  # make Option out of linked-table
+  ##########################################################################################
+
+  __getOptionsFromLinkedTable: (linkedField, linkTableName)->
+    newOptions = []
+    for field in linkedField.mask.fields
+      if field.kind == 'field'
+        parts = field._full_name.split('.')
+        objecttype = parts[0]
+        nested = '_nested:' + parts[1]
+        fieldName = parts[2]
+        fieldSearchPath = objecttype + '.' + nested + '.' + fieldName
+        newOption =
+          value: fieldSearchPath
+          test: fieldSearchPath
+        newOptions.push newOption
+    return newOptions
+
+  ##########################################################################################
+  # get Options from MaskSettings
+  ##########################################################################################
+
   getOptions: ->
     that = @
     # write the available fields from editor to select in maskconfig
     fieldOptions = []
+
+    # leere Option
+    emptyOption =
+        value : null
+        text : $$('fylr-plugin-find-duplicate-field-values.options.empty')
+
+    fieldOptions.push emptyOption
+
+    fieldsFound = false
+
+    # presents only level 0 and level 1 for the selection
     if @opts?.maskEditor
       fields = @opts.maskEditor.opts.schema.fields
       for field in fields
         if field.kind == 'field'
-          if field._column.type == 'text_oneline'
-            newOption =
-              value : field._full_name
-              text : field._column._name_localized + ' [' + field.column_name_hint + '] ("' + field._full_name + '")'
-            fieldOptions.push newOption
+          newOption =
+            value : field._full_name
+            text : field._full_name
+          fieldOptions.push newOption
+          fieldsFound = true
+        if field.kind == 'linked-table'
+          linkTableName = field.other_table_name_hint
+          test = @__getOptionsFromLinkedTable(field, linkTableName)
+          if test
+            fieldsFound = true
+          fieldOptions = fieldOptions.concat test
+
+    # show hint, if record was not saved yet
+    if ! fieldsFound
+      fieldOptions = []
+      emptyOption =
+          value : null
+          text : $$('fylr-plugin-find-duplicate-field-values.options.empty_save')
+
+      fieldOptions.push emptyOption
 
     maskOptions = [
       form:

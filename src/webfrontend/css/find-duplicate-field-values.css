@@ -1,3 +1,7 @@
+.fylr-plugin-default-values-from-pool {
+  grid-column: span 4;
+}
+
 /* the table, in which the found dublicate-values are displayed */
 .dublicate-info-standard-display {
   margin-right: 30px;
