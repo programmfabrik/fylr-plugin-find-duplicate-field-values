@@ -10,3 +10,6 @@ fylr-plugin-find-duplicate-field-values.info.link,Dubletten gefunden. Mehr Info 
 fylr-plugin-find-duplicate-field-values.modal.open.link,Öffnen,Öffnen
 fylr-plugin-find-duplicate-field-values.options.empty,Ohne,Without
 fylr-plugin-find-duplicate-field-values.options.empty_save,Die Optionen werden erst nach dem Speichern sichtbar,The options only become visible after saving
+fylr-plugin-find-duplicate-field-values.modal.open.shortinfo_standard,Kurzinfo,Shortinfo
+fylr-plugin-find-duplicate-field-values.modal.open.pool,Pool,Pool
+fylr-plugin-find-duplicate-field-values.modal.open.objecttype,Objekttyp,Objecttype

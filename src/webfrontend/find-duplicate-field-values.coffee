@@ -20,11 +20,25 @@ class FindDublicateFieldValues extends CustomMaskSplitter
   newOnClick = (evt, button) ->
      # generate content for modal
      searchResults = button.opts.searchResults
+     # if pool, show pool-path, else show objecttype
+     objecttype = searchResults[0]._objecttype
+     hasPool = false
+     if searchResults[0][objecttype]?._pool?._path
+       hasPool = true
+       firstRowLabel = $$('fylr-plugin-find-duplicate-field-values.modal.open.pool')
+     else
+       firstRowLabel = $$('fylr-plugin-find-duplicate-field-values.modal.open.objecttype')
      content = '<table>'
-     content += '<tr><th>Objekttyp</th><th>ID</th><th>Kurzinfo</th><th>' + $$('fylr-plugin-find-duplicate-field-values.modal.open.link') + '</th></tr>'
+     content += '<tr><th>' + firstRowLabel + '</th><th>ID</th><th>' + $$('fylr-plugin-find-duplicate-field-values.modal.open.shortinfo_standard') + '</th><th>' + $$('fylr-plugin-find-duplicate-field-values.modal.open.link') + '</th></tr>'
      for object in searchResults
        content += '<tr>'
-       content += '<td>' + object._objecttype + '</td>'
+       if hasPool == false
+         content += '<td>' + object._objecttype + '</td>'
+       else
+         fullPath = []
+         for pathElem in object[objecttype]._pool._path
+           fullPath.push pathElem.pool.name[ez5.loca.getLanguage()]
+         content += '<td>' + fullPath.join(' > ') + '</td>'
        content += '<td>' + object._system_object_id + '</td>'
        content += '<td>' + object._standard[1].text[ez5.loca.getLanguage()] + '</td>'
        link = window.location.origin + '/#/detail/' + object._uuid
@@ -59,7 +73,7 @@ class FindDublicateFieldValues extends CustomMaskSplitter
       type: "POST"
       json_data:
         limit: 100
-        format: 'standard'
+        format: 'full'
         generate_rights: false
         objecttypes: [objecttype]
         search: [
