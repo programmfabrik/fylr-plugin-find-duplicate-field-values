@@ -125,15 +125,16 @@ class FindDublicateFieldValues extends CustomMaskSplitter
     if ! isAllowedUse
       return CUI.dom.append(@renderInnerFields(opts))
 
-    # Gruppeneditor? --> den Splitter nicht nutzen
-    if opts.bulk && opts.mode == "editor-bulk"
-      return CUI.dom.append(@renderInnerFields(opts))
+    # is the splitter in an nested summary?
+    isInSummary = false
+    if opts?.__is_in_nested_summary
+      isInSummary = opts.__is_in_nested_summary
 
     # get inner fields
     innerFields = @renderInnerFields(opts)
 
-    # no action in detail-mode
-    if opts.mode == 'detail' || opts.mode == 'expert'
+    # no action in other modes than editor
+    if opts.mode != 'editor' || isInSummary == true
       return innerFields
 
     configuredField = @getDataOptions()?.fieldtotestforduplicates
@@ -147,7 +148,7 @@ class FindDublicateFieldValues extends CustomMaskSplitter
     #####################################################################################
     # EDITOR-Mode
     #####################################################################################
-    if opts.mode == "editor" || opts.mode == "editor-bulk"
+    if opts.mode == "editor" && !isInSummary
       if fields
         field = fields[0]
         innerFieldsCollection = @renderInnerFields(opts)
@@ -162,23 +163,21 @@ class FindDublicateFieldValues extends CustomMaskSplitter
         copiedFieldnameBlock = fieldnameblock.cloneNode(true)
 
         # create layout for splitter
+        # add button, click on button opens the searchresultsdisplay for records, which also have the same value in that field
+        infoButton = new CUI.Button
+                        text: $$('fylr-plugin-find-duplicate-field-values.info.link')
+                        class: 'fylr-plugin-find-duplicate-field-values-info-found-link'
+                        icon_left: new CUI.Icon(class: "fa-info-circle")
+                        size: "big"
+                        appearance: "link"
+                        onClick: originalOnClick
+
         verticalLayout = new CUI.VerticalLayout
           class: "fylr-plugin-default-values-from-pool editormode"
           maximize: true
-          #top:
-          #  class: 'fylr-plugin-default-values-from-pool-header'
-          #  content: copiedFieldnameBlock
           center:
             content:
-                      # Icon hinzufügen. Bei klick auf Icon vom Label öffnet sich ein
-                      # modal, welches die Infos über die Dubletten beinhalten
-                      infoButton = new CUI.Button
-                                     text: $$('fylr-plugin-find-duplicate-field-values.info.link')
-                                     class: 'fylr-plugin-find-duplicate-field-values-info-found-link'
-                                     icon_left: new CUI.Icon(class: "fa-info-circle")
-                                     size: "big"
-                                     appearance: "link"
-                                     onClick: originalOnClick
+                      infoButton
           bottom:
             content:
                       new CUI.HorizontalLayout
@@ -191,7 +190,7 @@ class FindDublicateFieldValues extends CustomMaskSplitter
         # infoButton is hidden by default
         infoButton.hide()
 
-        # wenn Feld einen Wert hat, dann Suche ausführen
+        # if field has a value, search for dublicate values
         if opts.data[field.ColumnSchema.name]
           # do search
           fieldValue = opts.data[field.ColumnSchema.name]
