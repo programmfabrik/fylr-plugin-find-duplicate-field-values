@@ -100,6 +100,9 @@ class FindDublicateFieldValues extends CustomMaskSplitter
       if data.objects.length == 0
         infoButton.hide()
 
+      CUI.Events.trigger
+        type: "viewport-resize"
+
       if infoButton.opts.onClick
         infoButton._onClick = newOnClick.bind(infoButton)
     return
@@ -211,8 +214,8 @@ class FindDublicateFieldValues extends CustomMaskSplitter
     return
 
 
+  # get groups, of which users are allowed to use this plugin
   _getAllowedGroupdIDs: ->
-    # get groups, of which users are allowed to use this plugin
     baseConfig = ez5.session.getBaseConfig("plugin", "find-duplicate-field-values")
     config = baseConfig['FindDuplicateFieldvalues']['find_duplicate_field_values'] || baseConfig['FindDuplicateFieldvalues']
     allowedGroups = []
