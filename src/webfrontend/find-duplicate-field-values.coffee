@@ -176,7 +176,7 @@ class FindDublicateFieldValues extends CustomMaskSplitter
                         onClick: originalOnClick
 
         verticalLayout = new CUI.VerticalLayout
-          class: "fylr-plugin-default-values-from-pool editormode"
+          class: "fylr-plugin-find-duplicate-field-values editormode"
           maximize: true
           center:
             content:
@@ -184,7 +184,7 @@ class FindDublicateFieldValues extends CustomMaskSplitter
           bottom:
             content:
                       new CUI.HorizontalLayout
-                        class:  "fylr-plugin-default-values-from-pool-input-layout"
+                        class:  "fylr-plugin-find-duplicate-field-values-input-layout"
                         left:
                           content: ''
                         center:
@@ -210,7 +210,8 @@ class FindDublicateFieldValues extends CustomMaskSplitter
               fieldValue = opts.data[field.ColumnSchema.name]
               @._performSearchAndAdjustButton(fieldValue, objecttype, field.__dbg_full_name, infoButton)
 
-        return CUI.dom.append(verticalLayout)
+        div = CUI.dom.element("div", class: "fylr-plugin-find-duplicate-field-values" )
+        return CUI.dom.append(div, verticalLayout)
     return
 
 
